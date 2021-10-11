@@ -5,14 +5,13 @@
 
 % Better...
 clear all;
-
 % Set paths
 PATH_FIELDTRIP       = '/home/plkn/repos/fieldtrip/';
 PATH_EEGLAB          = '/home/plkn/repos/eeglab/';
-PATH_IN              = '/mnt/projdat/schroeger_2fac/0_data_2fac/';
-PATH_SOMETHING_DONE  = '/mnt/projdat/schroeger_2fac/1_something_has_been_done/';
-PATH_PLOT            = '/mnt/projdat/schroeger_2fac/2_plots/';
-PATH_VEUSZ           = '/mnt/projdat/schroeger_2fac/3_veusz/';
+PATH_IN              = '/mnt/data_fast/schroeger_2fac/0_data_2fac/';
+PATH_SOMETHING_DONE  = '/mnt/data_fast/schroeger_2fac/1_something_has_been_done/';
+PATH_PLOT            = '/mnt/data_fast/schroeger_2fac/2_plots/';
+PATH_VEUSZ           = '/mnt/data_fast/schroeger_2fac/3_veusz/';
 
 % Part switch
 dostuff = {'thing3'};
@@ -50,7 +49,7 @@ if ismember('thing1', dostuff)
     for x1 = 1 : size(erps, 1)
         for x2 = 1 : size(erps, 2)
             for x3 = 1 : size(erps, 3)
-                ref_val = squeeze(mean(erps(x1, x2, x3, [10, 21], :), 4));
+                ref_val = squeeze(mean(erps(x1, x2, x3, [10, 21], :), 4)); % Re-reference to linked mastoids
                 for x4 = 1 : size(erps, 4)
                     erps(x1, x2, x3, x4, :) = squeeze(erps(x1, x2, x3, x4, :)) - ref_val;
                 end
@@ -315,7 +314,7 @@ if ismember('thing3', dostuff)
     prune_idx = erp_time >= -200 & erp_time <= 1000;
     d.time = erp_time(prune_idx);
 
-    % Test interaction based on length differences
+    % The difference of diffenrences in ERPs... The interaction that is
     D = {};
     for s = 1 : size(erps, 1)
         long_minus_short_in_std = squeeze(erps(s, 1, 2, :, prune_idx)) - squeeze(erps(s, 1, 1, :, prune_idx));
@@ -323,8 +322,75 @@ if ismember('thing3', dostuff)
         d.avg = long_minus_short_in_dev - long_minus_short_in_std; % Difference of difference
         D{s} = d;
     end 
-    GA_diff_std = ft_timelockgrandaverage(cfg, D{1, :});
+    GA_diff_of_diff = ft_timelockgrandaverage(cfg, D{1, :});
 
+    % The difference in std
+    D = {};
+    for s = 1 : size(erps, 1)
+        long_minus_short_in_std = squeeze(erps(s, 1, 2, :, prune_idx)) - squeeze(erps(s, 1, 1, :, prune_idx));
+        d.avg = long_minus_short_in_std;
+        D{s} = d;
+    end 
+    GA_diff_in_std = ft_timelockgrandaverage(cfg, D{1, :});
+
+    % The difference in dev
+    D = {};
+    for s = 1 : size(erps, 1)
+        long_minus_short_in_dev = squeeze(erps(s, 2, 2, :, prune_idx)) - squeeze(erps(s, 2, 1, :, prune_idx));
+        d.avg = long_minus_short_in_dev;
+        D{s} = d;
+    end 
+    GA_diff_in_dev = ft_timelockgrandaverage(cfg, D{1, :});
+
+    % Std short
+    D = {};
+    for s = 1 : size(erps, 1)
+        d.avg = squeeze(erps(s, 1, 1, :, prune_idx));
+        D{s} = d;
+    end 
+    GA_std_short = ft_timelockgrandaverage(cfg, D{1, :});
+
+    % Std long
+    D = {};
+    for s = 1 : size(erps, 1)
+        d.avg = squeeze(erps(s, 1, 2, :, prune_idx));
+        D{s} = d;
+    end 
+    GA_std_long = ft_timelockgrandaverage(cfg, D{1, :});
+
+    % Dev short
+    D = {};
+    for s = 1 : size(erps, 1)
+        d.avg = squeeze(erps(s, 2, 1, :, prune_idx));
+        D{s} = d;
+    end 
+    GA_dev_short = ft_timelockgrandaverage(cfg, D{1, :});
+
+    % Dev long
+    D = {};
+    for s = 1 : size(erps, 1)
+        d.avg = squeeze(erps(s, 2, 2, :, prune_idx));
+        D{s} = d;
+    end 
+    GA_dev_long = ft_timelockgrandaverage(cfg, D{1, :});
+
+
+
+    % Same for RT
+    long_minus_short_in_std_rt = performance_data.Bed2_RT - performance_data.Bed1_RT;
+    long_minus_short_in_dev_rt = performance_data.Bed4_RT - performance_data.Bed3_RT;
+    interaction_rt = long_minus_short_in_dev_rt - long_minus_short_in_std_rt;
+
+    % Same for IE
+    long_minus_short_in_std_ie = performance_data.Bed2_IE - performance_data.Bed1_IE;
+    long_minus_short_in_dev_ie = performance_data.Bed4_IE - performance_data.Bed3_IE;
+    interaction_ie = long_minus_short_in_dev_ie - long_minus_short_in_std_ie;
+
+    % Average distraction effect in RT
+    average_std_rt = (performance_data.Bed2_RT + performance_data.Bed1_RT) / 2;
+    average_dev_rt = (performance_data.Bed4_RT + performance_data.Bed3_RT) / 2;
+    average_distraction_rt = average_dev_rt - average_std_rt;
+    
     % Cluster statistics configuration
     cfg = [];
     cfg.tail             = 0; 
@@ -341,14 +407,34 @@ if ismember('thing3', dostuff)
     cfg.computecritval   = 'yes'; 
     cfg.ivar             = 1;
 
-    aa=bb;
-    % Correlation age
-    performance = performance_data
-    cfg.design = ages;
-    [stat] = ft_timelockstatistics(cfg, GA_diff_std);
-    plot_correlation_clusters(stat, 0.025, 'correlation-lengthdiff-in-std-x-age', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
+    % % Correlation 
+    % cfg.design = performance_data.Bed1_RT;
+    % [stat] = ft_timelockstatistics(cfg, GA_std_short);
+    % plot_correlation_clusters(stat, 0.025, 'correlation_in_std_short', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
 
-	
+    % % Correlation 
+    % cfg.design = performance_data.Bed2_RT;
+    % [stat] = ft_timelockstatistics(cfg, GA_std_long);
+    % plot_correlation_clusters(stat, 0.025, 'correlation_in_std_long', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
+
+    % % Correlation 
+    % cfg.design = performance_data.Bed3_RT;
+    % [stat] = ft_timelockstatistics(cfg, GA_dev_short);
+    % plot_correlation_clusters(stat, 0.025, 'correlation_in_dev_short', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
+
+    % % Correlation 
+    % cfg.design = performance_data.Bed4_RT;
+    % [stat] = ft_timelockstatistics(cfg, GA_dev_long);
+    % plot_correlation_clusters(stat, 0.025, 'correlation_in_dev_long', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
+
+    % Correlation 
+    cfg.design = average_std_rt;
+    [stat] = ft_timelockstatistics(cfg, GA_diff_in_std);
+    plot_correlation_clusters(stat, 0.025, 'correlation_diff_in_short_average_short_rt', [-0.5, 0.5], PATH_VEUSZ, PATH_PLOT, chanlabs, chanlocs); 
+
+
+
+
 	
 	
 	
