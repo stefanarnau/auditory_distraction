@@ -5,16 +5,17 @@
 
 % Better...
 clear all;
+
 % Set paths
-PATH_FIELDTRIP       = '/home/plkn/repos/fieldtrip/';
-PATH_EEGLAB          = '/home/plkn/repos/eeglab/';
+PATH_FIELDTRIP       = '/home/plkn/fieldtrip-master/';
+PATH_EEGLAB          = '/home/plkn/eeglab2021.1/';
 PATH_IN              = '/mnt/data_fast/schroeger_2fac/0_data_2fac/';
 PATH_SOMETHING_DONE  = '/mnt/data_fast/schroeger_2fac/1_something_has_been_done/';
 PATH_PLOT            = '/mnt/data_fast/schroeger_2fac/2_plots/';
 PATH_VEUSZ           = '/mnt/data_fast/schroeger_2fac/3_veusz/';
 
 % Part switch
-dostuff = {'thing3'};
+dostuff = {'thing2'};
 
 % THING 1: prepare the data
 if ismember('thing1', dostuff)
@@ -161,6 +162,120 @@ if ismember('thing2', dostuff)
 	dlmwrite([PATH_VEUSZ, 'erps_pz.csv'], erps_pz);
 	dlmwrite([PATH_VEUSZ, 'erp_time.csv'], erp_time(prune_idx));
 
+    % Tone duration difference wave
+    duration_fcz_diff = squeeze(mean(squeeze(erps(:, :, 2, idx_fcz, prune_idx)) - squeeze(erps(:, :, 1, idx_fcz, prune_idx)), 2));
+    duration_pz_diff = squeeze(mean(squeeze(erps(:, :, 2, idx_pz, prune_idx)) - squeeze(erps(:, :, 1, idx_pz, prune_idx)), 2));
+    diff_erp_duration = [mean(duration_fcz_diff)', std(duration_fcz_diff)', mean(duration_pz_diff)', std(duration_pz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_duration.csv'], diff_erp_duration, 'delimiter', '\t');
+
+    % Topos duration
+    topotime = 300;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+    
+    topotime = 400;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+    
+    topotime = 500;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+    
+    topotime = 600;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+    
+    topotime = 700;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+
+    % Deviant standard difference wave
+    deviance_fcz_diff = squeeze(mean(squeeze(erps(:, 2, :, idx_fcz, prune_idx)) - squeeze(erps(:, 1, :, idx_fcz, prune_idx)), 2));
+    deviance_pz_diff = squeeze(mean(squeeze(erps(:, 2, :, idx_pz, prune_idx)) - squeeze(erps(:, 1, :, idx_pz, prune_idx)), 2));
+    diff_erp_deviance = [mean(deviance_fcz_diff)', std(deviance_fcz_diff)', mean(deviance_pz_diff)', std(deviance_pz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_deviance.csv'], diff_erp_deviance, 'delimiter', '\t');
+
+    % Topos deviance
+    topotime = 300;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    
+    topotime = 400;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    
+    topotime = 500;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    
+    topotime = 600;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    
+    topotime = 700;
+    clim = [-3, 3];
+    figure('Visible', 'off'); clf;
+    [~, time_idx] = min(abs(erp_time - topotime));
+    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
+    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
+    colormap('jet');
+    caxis(clim);
+    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    
     % Test long versus short trials
     D = {};
     for s = 1 : size(erps, 1)
