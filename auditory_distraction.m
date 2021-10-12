@@ -15,7 +15,7 @@ PATH_PLOT            = '/mnt/data_fast/schroeger_2fac/2_plots/';
 PATH_VEUSZ           = '/mnt/data_fast/schroeger_2fac/3_veusz/';
 
 % Part switch
-dostuff = {'thing2'};
+dostuff = {'thing1'};
 
 % THING 1: prepare the data
 if ismember('thing1', dostuff)
