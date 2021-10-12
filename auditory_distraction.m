@@ -163,119 +163,89 @@ if ismember('thing2', dostuff)
 	dlmwrite([PATH_VEUSZ, 'erp_time.csv'], erp_time(prune_idx));
 
     % Tone duration difference wave
-    duration_fcz_diff = squeeze(mean(squeeze(erps(:, :, 2, idx_fcz, prune_idx)) - squeeze(erps(:, :, 1, idx_fcz, prune_idx)), 2));
-    duration_pz_diff = squeeze(mean(squeeze(erps(:, :, 2, idx_pz, prune_idx)) - squeeze(erps(:, :, 1, idx_pz, prune_idx)), 2));
-    diff_erp_duration = [mean(duration_fcz_diff)', std(duration_fcz_diff)', mean(duration_pz_diff)', std(duration_pz_diff)'];
-    dlmwrite([PATH_VEUSZ, 'diff_erp_duration.csv'], diff_erp_duration, 'delimiter', '\t');
+    duration_fcz_long = squeeze(mean(squeeze(erps(:, :, 2, idx_fcz, prune_idx)), 2));
+    duration_fcz_short = squeeze(mean(squeeze(erps(:, :, 1, idx_fcz, prune_idx)), 2));
+    duration_fcz_diff = duration_fcz_long - duration_fcz_short;
+    diff_erp_fcz_duration = [mean(duration_fcz_long)', std(duration_fcz_long)', mean(duration_fcz_short)', std(duration_fcz_short)', mean(duration_fcz_diff)', std(duration_fcz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_fcz_duration.csv'], diff_erp_fcz_duration, 'delimiter', '\t');
 
-    % Topos duration
-    topotime = 300;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
-    
-    topotime = 400;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
-    
-    topotime = 500;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
-    
-    topotime = 600;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
-    
-    topotime = 700;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_duration_', num2str(topotime), '.png']);
+    duration_pz_long = squeeze(mean(squeeze(erps(:, :, 2, idx_pz, prune_idx)), 2));
+    duration_pz_short = squeeze(mean(squeeze(erps(:, :, 1, idx_pz, prune_idx)), 2));
+    duration_pz_diff = duration_pz_long - duration_pz_short;
+    diff_erp_pz_duration = [mean(duration_pz_long)', std(duration_pz_long)', mean(duration_pz_short)', std(duration_pz_short)', mean(duration_pz_diff)', std(duration_pz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_pz_duration.csv'], diff_erp_pz_duration, 'delimiter', '\t');
 
     % Deviant standard difference wave
-    deviance_fcz_diff = squeeze(mean(squeeze(erps(:, 2, :, idx_fcz, prune_idx)) - squeeze(erps(:, 1, :, idx_fcz, prune_idx)), 2));
-    deviance_pz_diff = squeeze(mean(squeeze(erps(:, 2, :, idx_pz, prune_idx)) - squeeze(erps(:, 1, :, idx_pz, prune_idx)), 2));
-    diff_erp_deviance = [mean(deviance_fcz_diff)', std(deviance_fcz_diff)', mean(deviance_pz_diff)', std(deviance_pz_diff)'];
-    dlmwrite([PATH_VEUSZ, 'diff_erp_deviance.csv'], diff_erp_deviance, 'delimiter', '\t');
+    oddball_fcz_deviant = squeeze(mean(squeeze(erps(:, 2, :, idx_fcz, prune_idx)), 2));
+    oddball_fcz_standard = squeeze(mean(squeeze(erps(:, 1, :, idx_fcz, prune_idx)), 2));
+    oddball_fcz_diff = oddball_fcz_deviant - oddball_fcz_standard;
+    diff_erp_fcz_oddball = [mean(oddball_fcz_deviant)', std(oddball_fcz_deviant)', mean(oddball_fcz_standard)', std(oddball_fcz_standard)', mean(oddball_fcz_diff)', std(oddball_fcz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_fcz_oddball.csv'], diff_erp_fcz_oddball, 'delimiter', '\t');
 
-    % Topos deviance
-    topotime = 300;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
+    oddball_pz_deviant = squeeze(mean(squeeze(erps(:, 2, :, idx_pz, prune_idx)), 2));
+    oddball_pz_standard = squeeze(mean(squeeze(erps(:, 1, :, idx_pz, prune_idx)), 2));
+    oddball_pz_diff = oddball_pz_deviant - oddball_pz_standard;
+    diff_erp_pz_oddball = [mean(oddball_pz_deviant)', std(oddball_pz_deviant)', mean(oddball_pz_standard)', std(oddball_pz_standard)', mean(oddball_pz_diff)', std(oddball_pz_diff)'];
+    dlmwrite([PATH_VEUSZ, 'diff_erp_pz_oddball.csv'], diff_erp_pz_oddball, 'delimiter', '\t');
     
-    topotime = 400;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
-    
-    topotime = 500;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
-    
-    topotime = 600;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
-    
-    topotime = 700;
-    clim = [-3, 3];
-    figure('Visible', 'off'); clf;
-    [~, time_idx] = min(abs(erp_time - topotime));
-    pd = squeeze(mean(squeeze(erps(:, :, 2, :, time_idx)) - squeeze(erps(:, :, 1, :, time_idx)), [1, 2]));
-    topoplot(pd, chanlocs, 'plotrad', 0.7, 'intrad', 0.7, 'intsquare', 'on', 'conv', 'off', 'electrodes', 'on');
-    colormap('jet');
-    caxis(clim);
-    saveas(gcf, [PATH_PLOT, 'topo_deviance_', num2str(topotime), '.png']);
-    
+    % Interaction fcz
+    fcz_standard_long = squeeze(squeeze(erps(:, 1, 2, idx_fcz, prune_idx)));
+    fcz_standard_short = squeeze(squeeze(erps(:, 1, 1, idx_fcz, prune_idx)));
+    fcz_deviant_long = squeeze(squeeze(erps(:, 2, 2, idx_fcz, prune_idx)));
+    fcz_deviant_short = squeeze(squeeze(erps(:, 2, 1, idx_fcz, prune_idx)));
+
+    fcz_duration_in_dev = fcz_deviant_long - fcz_deviant_short;
+    fcz_duration_in_std = fcz_standard_long - fcz_standard_short;
+    fcz_oddball_in_long = fcz_deviant_long - fcz_standard_long;
+    fcz_oddball_in_short = fcz_deviant_short - fcz_standard_short;
+
+    fcz_duration_diff = fcz_duration_in_dev - fcz_duration_in_std;
+    fcz_oddball_diff = fcz_oddball_in_long - fcz_oddball_in_short;
+
+    interaction_fcz = [mean(fcz_standard_short)', std(fcz_standard_short)',...
+                       mean(fcz_standard_long)', std(fcz_standard_long)',...
+                       mean(fcz_deviant_short)', std(fcz_deviant_short)',...
+                       mean(fcz_deviant_long)', std(fcz_deviant_long)',...
+                       mean(fcz_duration_in_dev)', std(fcz_duration_in_dev)',...
+                       mean(fcz_duration_in_std)', std(fcz_duration_in_std)',...
+                       mean(fcz_oddball_in_long)', std(fcz_oddball_in_long)',...
+                       mean(fcz_oddball_in_short)', std(fcz_oddball_in_short)',...
+                       mean(fcz_duration_diff)', std(fcz_duration_diff)',...
+                       mean(fcz_oddball_diff)', std(fcz_oddball_diff)',...
+                       ];
+
+    dlmwrite([PATH_VEUSZ, 'interaction_fcz.csv'], interaction_fcz, 'delimiter', '\t');
+
+    % Interaction pz
+    pz_standard_long = squeeze(squeeze(erps(:, 1, 2, idx_pz, prune_idx)));
+    pz_standard_short = squeeze(squeeze(erps(:, 1, 1, idx_pz, prune_idx)));
+    pz_deviant_long = squeeze(squeeze(erps(:, 2, 2, idx_pz, prune_idx)));
+    pz_deviant_short = squeeze(squeeze(erps(:, 2, 1, idx_pz, prune_idx)));
+
+    pz_duration_in_dev = pz_deviant_long - pz_deviant_short;
+    pz_duration_in_std = pz_standard_long - pz_standard_short;
+    pz_oddball_in_long = pz_deviant_long - pz_standard_long;
+    pz_oddball_in_short = pz_deviant_short - pz_standard_short;
+
+    pz_duration_diff = pz_duration_in_dev - pz_duration_in_std;
+    pz_oddball_diff = pz_oddball_in_long - pz_oddball_in_short;
+
+    interaction_pz = [mean(pz_standard_short)', std(pz_standard_short)',...
+                       mean(pz_standard_long)', std(pz_standard_long)',...
+                       mean(pz_deviant_short)', std(pz_deviant_short)',...
+                       mean(pz_deviant_long)', std(pz_deviant_long)',...
+                       mean(pz_duration_in_dev)', std(pz_duration_in_dev)',...
+                       mean(pz_duration_in_std)', std(pz_duration_in_std)',...
+                       mean(pz_oddball_in_long)', std(pz_oddball_in_long)',...
+                       mean(pz_oddball_in_short)', std(pz_oddball_in_short)',...
+                       mean(pz_duration_diff)', std(pz_duration_diff)',...
+                       mean(pz_oddball_diff)', std(pz_oddball_diff)',...
+                       ];
+
+    dlmwrite([PATH_VEUSZ, 'interaction_pz.csv'], interaction_pz, 'delimiter', '\t');
+
+    aa=bb;
+
     % Test long versus short trials
     D = {};
     for s = 1 : size(erps, 1)
