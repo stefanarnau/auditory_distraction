@@ -102,7 +102,7 @@ if ismember('thing2', dostuff)
     d = [];
     d.dimord = 'chan_time';
     d.label = chanlabs;
-    prune_idx = erp_times >= -200 & erp_times <= 1000;
+    prune_idx = erp_times >= -700 & erp_times <= 400;
     d.time = erp_times(prune_idx);
 
     % erps dimord: subject x oddball x length x channel x time
