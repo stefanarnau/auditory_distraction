@@ -15,7 +15,7 @@ PATH_PLOT            = '/mnt/data_fast/schroeger_2fac/2_plots_resplocked/';
 PATH_VEUSZ           = '/mnt/data_fast/schroeger_2fac/3_veusz_resplocked/';
 
 % Part switch
-dostuff = {'thing2'};
+dostuff = {'thing1'};
 
 % THING 1: prepare the data
 if ismember('thing1', dostuff)
@@ -35,6 +35,13 @@ if ismember('thing1', dostuff)
         erps_resplocked(f, 2, 1, :, :) = squeeze(erps(3, :, :)); % dev short
         erps_resplocked(f, 2, 2, :, :) = squeeze(erps(4, :, :)); % dev long
     end
+
+    aa=bb;
+
+    subj=1;
+    fprintf('%s', performance_data.VPCode{subj})
+    figure
+    plot(squeeze(erps_resplocked(subj, 1, 1, 13, :)));
 
     % New electrode order
     new_order = [1, 29, 30,...          % FP1 FPz Fp2 

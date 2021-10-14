@@ -35,6 +35,13 @@ if ismember('thing1', dostuff)
         erps(f, 2, 1, :, :) = squeeze(mean(ERP_Dat.data(3, :, :), 1)); % dev short
         erps(f, 2, 2, :, :) = squeeze(mean(ERP_Dat.data(4, :, :), 1)); % dev long
     end
+    
+    aa=bb;
+
+    subj=1;
+    fprintf('%s', performance_data.VPCode{subj})
+    figure
+    plot(squeeze(erps(subj, 1, 1, 13, :)));
 
     % New electrode order
     new_order = [1, 29, 30,...          % FP1 FPz Fp2 
