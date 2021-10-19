@@ -15,7 +15,7 @@ PATH_PLOT            = '/mnt/data_fast/schroeger_2fac/2_plots_resplocked/';
 PATH_VEUSZ           = '/mnt/data_fast/schroeger_2fac/3_veusz_resplocked/';
 
 % Part switch
-dostuff = {'thing1'};
+dostuff = {'thing2'};
 
 % THING 1: prepare the data
 if ismember('thing1', dostuff)
@@ -30,18 +30,11 @@ if ismember('thing1', dostuff)
     erps_resplocked = [];
     for f = 1 : n_subjects
         load([PATH_IN, performance_data.VPCode{f}, '_resplocked.mat']);
-        erps_resplocked(f, 1, 1, :, :) = squeeze(erps(1, :, :)); % std short
-        erps_resplocked(f, 1, 2, :, :) = squeeze(erps(2, :, :)); % std long
-        erps_resplocked(f, 2, 1, :, :) = squeeze(erps(3, :, :)); % dev short
-        erps_resplocked(f, 2, 2, :, :) = squeeze(erps(4, :, :)); % dev long
+        erps_resplocked(f, 1, 1, :, :) = squeeze(erps_resp(1, :, :)); % std short
+        erps_resplocked(f, 1, 2, :, :) = squeeze(erps_resp(2, :, :)); % std long
+        erps_resplocked(f, 2, 1, :, :) = squeeze(erps_resp(3, :, :)); % dev short
+        erps_resplocked(f, 2, 2, :, :) = squeeze(erps_resp(4, :, :)); % dev long
     end
-
-    aa=bb;
-
-    subj=1;
-    fprintf('%s', performance_data.VPCode{subj})
-    figure
-    plot(squeeze(erps_resplocked(subj, 1, 1, 13, :)));
 
     % New electrode order
     new_order = [1, 29, 30,...          % FP1 FPz Fp2 
