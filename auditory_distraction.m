@@ -251,8 +251,6 @@ if ismember('thing2', dostuff)
 
     dlmwrite([PATH_VEUSZ, 'interaction_pz.csv'], interaction_pz, 'delimiter', '\t');
 
-    aa=bb;
-
     % Test long versus short trials
     D = {};
     for s = 1 : size(erps, 1)
